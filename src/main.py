@@ -5,10 +5,9 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 
 from src.config.config import settings
-from src.core import crawler, dispatcher
+from src.core import crawler, dispatcher, parsers
 from src.detection import classifier, detector
 from src.reporting import report_generator
-from src.core import parsers
 
 
 def init_worker():
@@ -100,7 +99,7 @@ def main(source_dir: str):
         print("Анализ завершен. Персональные данные или ошибки чтения не найдены.")
         return
 
-    report_generator.generate_csv_report(results, "pdn_report.csv")
+    report_generator.generate_csv_report(results, "result.csv")
 
 
 if __name__ == "__main__":

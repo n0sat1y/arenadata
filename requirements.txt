@@ -4,7 +4,7 @@ openpyxl
 xlrd
 python-docx
 PyMuPDF
-pytesseract
+paddleocr
 Pillow
 pyarrow
 moviepy

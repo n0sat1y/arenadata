@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 dataset/
+vosk-model
 
 # C extensions
 *.so

@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     NLP_MAX_TEXT_LEN: int = 100000
 
-    VOSK_MODEL_PATH: str = "vosk"
+    VOSK_MODEL_PATH: str = "vosk-model"
 
     LARGE_THRESHOLDS: dict[str, int] = {"Ordinary": 50, "Government": 10, "Payment": 5}
 
