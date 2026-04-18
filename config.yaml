@@ -1,0 +1,48 @@
+# Конфигурация для детектора персональных данных
+
+# Путь к датасету (можно переопределить через CLI)
+dataset_path: "./dataset"
+
+# Путь к выходному файлу с результатами
+output_file: "pii_report.csv"
+
+# Настройки OCR
+ocr:
+  enabled: true
+  engine: "paddleocr"  # PaddleOCR - не требует отдельной установки моделей
+  language: "en"  # Английский язык (поддерживает и русский текст)
+  
+# Настройки многопоточности
+processing:
+  max_workers: 4
+  chunk_size: 100
+
+# Категории персональных данных для поиска
+pii_categories:
+  - fio  # ФИО
+  - phone  # Телефоны
+  - email  # Email
+  - passport  # Паспорт РФ
+  - snils  # СНИЛС
+  - inn  # ИНН
+  - driver_license  # Водительское удостоверение
+  - bank_card  # Банковские карты
+  - bank_account  # Банковские счета
+  - address  # Адреса
+  - birth_date  # Дата рождения
+  - biometric  # Биометрические данные
+  - health  # Данные о здоровье
+  - special  # Специальные категории
+
+# Поддерживаемые форматы файлов
+supported_formats:
+  documents: [".pdf", ".doc", ".docx", ".rtf", ".xls", ".xlsx"]
+  structured: [".csv", ".json", ".parquet"]
+  images: [".tif", ".tiff", ".jpg", ".jpeg", ".png", ".gif"]
+  web: [".html", ".htm"]
+  video: [".mp4", ".avi", ".mov"]
+
+# Настройки логирования
+logging:
+  level: "INFO"
+  file: "pii_detector.log"

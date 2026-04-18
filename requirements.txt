@@ -1,15 +1,27 @@
-tqdm
-pandas
-openpyxl
-xlrd
-python-docx
-PyMuPDF
-paddleocr
-Pillow
-pyarrow
-moviepy
-vosk
-beautifulsoup4
-striprtf
-spacy
-pydantic-settings
+# Обработка документов
+PyPDF2>=3.0.0
+pdfplumber>=0.10.0
+python-docx>=1.0.0
+openpyxl>=3.1.0
+
+# OCR для изображений
+paddleocr>=2.7.0
+paddlepaddle>=2.5.0
+Pillow>=10.0.0
+
+# Обработка структурированных данных
+pandas>=2.0.0
+pyarrow>=12.0.0
+
+# Обработка HTML
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Обработка видео (извлечение кадров)
+opencv-python>=4.8.0
+
+# CLI и конфигурация
+pyyaml>=6.0
+
+# Многопоточность и производительность
+tqdm>=4.66.0
