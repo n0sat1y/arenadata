@@ -11,8 +11,7 @@ class Settings(BaseSettings):
 
     NLP_MAX_TEXT_LEN: int = 100000
 
-    VOSK_MODEL_PATH: str = "model"
-    # TESSERACT_CMD: str = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    VOSK_MODEL_PATH: str = "vosk"
 
     LARGE_THRESHOLDS: dict[str, int] = {"Ordinary": 50, "Government": 10, "Payment": 5}
 

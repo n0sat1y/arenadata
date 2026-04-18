@@ -8,11 +8,13 @@ from src.config.config import settings
 from src.core import crawler, dispatcher
 from src.detection import classifier, detector
 from src.reporting import report_generator
+from src.core import parsers
 
 
 def init_worker():
     """Функция инициализации, вызывается при старте каждого дочернего процесса"""
     detector.init_nlp()
+    parsers.init_ocr()
 
 
 def process_single_file(file_path: str):
