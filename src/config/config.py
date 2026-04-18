@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     SOURCE_DIR: str = "./dataset/share"
-    MAX_WORKERS: int = max(1, (os.cpu_count() or 4) - 1)
+    MAX_WORKERS: int = 1  # max(1, (os.cpu_count() or 4) - 1)
 
     CHUNK_SIZE: int = 10000
 
