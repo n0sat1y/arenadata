@@ -1,0 +1,15 @@
+tqdm
+pandas
+openpyxl
+xlrd
+python-docx
+PyMuPDF
+pytesseract
+Pillow
+pyarrow
+moviepy
+vosk
+beautifulsoup4
+striprtf
+natasha
+pydantic-settings
