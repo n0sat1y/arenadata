@@ -72,16 +72,22 @@ def parse_doc_legacy(file_path: str):
         text = re.sub(r'\s+', ' ', text)
         for i in range(0, len(text), 50000):
             yield text[i:i+50000]
-
+            
 def init_ocr():
     """Инициализация PaddleOCR один раз для процесса (воркера)"""
     global ocr_model
     if ocr_model is None:
         from paddleocr import PaddleOCR
-        # Отключаем дебаг-спам от PaddleOCR в консоль
+        import logging
+        
+        # Отключаем логирование через стандартный logging (этого достаточно)
         logging.getLogger('ppocr').setLevel(logging.ERROR)
-        # use_angle_cls=True - автоматически переворачивает кривые сканы
-        ocr_model = PaddleOCR(use_angle_cls=True, lang='ru', show_log=False)
+        
+        # Удаляем аргумент show_log=False, так как ваша версия его не знает
+        ocr_model = PaddleOCR(
+            use_angle_cls=True, 
+            lang='ru'
+        )
 
 def extract_paddle_text(result) -> str:
     """Хелпер для извлечения текста из вывода PaddleOCR"""

@@ -1,40 +1,39 @@
-from natasha import Doc, MorphVocab, NewsEmbedding, NewsNERTagger, Segmenter
-
+import spacy
 from src.detection.patterns import KEYWORDS, REGEX_PATTERNS
 from src.detection.validation import is_valid_luhn
+from src.config.config import settings
 
-# Глобальные объекты для воркеров (инициализируются один раз)
-segmenter = None
-morph_vocab = None
-ner_tagger = None
-
+# Глобальный объект nlp для воркера
+nlp = None
 
 def init_nlp():
-    global segmenter, morph_vocab, ner_tagger
-    if segmenter is None:
-        segmenter = Segmenter()
-        morph_vocab = MorphVocab()
-        emb = NewsEmbedding()
-        ner_tagger = NewsNERTagger(emb)  # Оставили только NER! Синтаксис удален.
-
+    global nlp
+    if nlp is None:
+        try:
+            # Загружаем модель, отключаем ненужные компоненты для ускорения
+            # Нам нужны только 'ner' и сопутствующие для нормализации (если требуется)
+            nlp = spacy.load(settings.SPACY_MODEL, disable=["parser", "attribute_ruler"])
+        except OSError:
+            # Фолбэк, если модель не скачана (хотя лучше скачать заранее)
+            import os
+            os.system(f"python -m spacy download {settings.SPACY_MODEL}")
+            nlp = spacy.load(settings.SPACY_MODEL)
 
 def find_pii_in_chunk(text: str) -> dict:
     found_data = {}
     init_nlp()
 
-    # 1. Быстрый Regex
+    # 1. Быстрый Regex (остается без изменений)
     for cat, pattern in REGEX_PATTERNS.items():
         matches = list(set(pattern.findall(text)))
         if not matches:
             continue
-
         if cat == "CREDIT_CARD":
             matches = [m for m in matches if is_valid_luhn(m)]
-
         if matches:
             found_data[cat] = {"count": len(matches), "examples": [matches[0]]}
 
-    # 2. Поиск строгих ключевых фраз
+    # 2. Поиск строгих ключевых фраз (остается без изменений)
     lower_text = text.lower()
     for cat, kwords in KEYWORDS.items():
         for kw in kwords:
@@ -44,22 +43,21 @@ def find_pii_in_chunk(text: str) -> dict:
                 if not found_data[cat]["examples"]:
                     found_data[cat]["examples"].append(kw)
 
-    # 3. Natasha (NER: ФИО и Адреса)
-    # Защита от гигантских строк для NLP
-    if len(text) < 100000:
-        doc = Doc(text)
-        doc.segment(segmenter)
-        doc.tag_ner(ner_tagger)
-
+    # 3. spaCy NER (ФИО и Адреса)
+    if 0 < len(text) < 100000:
+        doc = nlp(text)
+        
         fio_list, loc_list = [], []
-        for span in doc.spans:
-            if span.type == "PER":
-                span.normalize(morph_vocab)
-                if len(span.normal.split()) > 1:
-                    fio_list.append(span.normal)
-            elif span.type == "LOC":
-                span.normalize(morph_vocab)
-                loc_list.append(span.normal)
+        
+        for ent in doc.ents:
+            # PER - Person (ФИО), LOC - Location (Адреса)
+            if ent.label_ == "PER":
+                # В spaCy ent.lemma_ возвращает нормальную форму
+                # Проверяем, что это похоже на ФИО (минимум 2 слова)
+                if len(ent.text.split()) > 1:
+                    fio_list.append(ent.lemma_)
+            elif ent.label_ == "LOC":
+                loc_list.append(ent.lemma_)
 
         if fio_list:
             found_data["FIO"] = {"count": len(set(fio_list)), "examples": [fio_list[0]]}
